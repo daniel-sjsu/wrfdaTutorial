@@ -4,6 +4,12 @@
 ## Installation
 
 #### Cloning Repository
+I've personally found it beneficial to have a parent directory to contain my WRF/WRFDA installations, especially since 4Dvar and 3Dvar are two separate installations.
+```bash
+mkdir WRFSFIRE
+cd WRFSFIRE
+```
+
 Clone WRF-SFIRE by using one of the following commands
 
 ```bash
@@ -14,15 +20,23 @@ git clone git://repo.or.cz/WRF-SFIRE.git WRF-SFIRE-DA
 ```
 Some more information about WRF-SFIRE located [here](https://wiki.openwfm.org/wiki/How_to_get_WRF-SFIRE).
 
+Download test case files, you can skip this if you want to make your own case or are using a newer version of WRFSFIRE(V4.4)
+```bash
+wget link
+unzup fileName
+```
+
+---
+
 #### Compiling 3D-VAR 
-More information found [here](https://www2.mmm.ucar.edu/wrf/users/wrfda/Docs/user_guide_V3.7.1/users_guide_chap6.htm).
+More information found in the [UCAR Guide](https://www2.mmm.ucar.edu/wrf/users/wrfda/Docs/user_guide_V3.7.1/users_guide_chap6.htm). When copying commands from that link, be careful since they sometimes use a different "-" which causes problems.
 
 Compilation requires netCDF to be installed, refer to this [tutorial](https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php#STEP2) for instructions on installing.
 
 ```bash
 export NETCDF="/path_to_directory"
 ```
-However, it is best to load in other libraries used for WRF in general using something like this script to avoid 
+However, it is best to load in other libraries used for WRF in general using something like this script to avoid:<br> 
 `HDF5 not set in environment. Will configure WRF for use without.`<br>
 `$JASPERLIB or $JASPERINC not found in environment, configuring to build without grib2 I/O...`
 
@@ -99,5 +113,79 @@ ls -l var/build/*exe var/obsproc/src/obsproc.exe | wc -l
 ```
 If this does not return 44, look into the compile.out file for errors, happened to me originally but I forget what the errors were.
 
+---
 #### Running 3D-Var Test Case 
-The tutorial website has a test case but it is for an older version of WRF so numerous issues arise from this. To avoid that problem, use this test case instead
+The tutorial website has a test case but it is for an older version of WRF so numerous issues arise from this. To avoid that problem, download test case files.<br>
+You can skip this if you want to make your own case or are using a newer version of WRFSFIRE(V4.4). <br>
+Change directories to where you'd like to run your testing (For example back into the WRFSFIRE parent directory)
+```bash
+wget link
+unzup fileName
+```
+This should contain the following files
+```
+19:00:00_fake.txt  
+wrfbdy_d01  
+wrfinput_d01
+namelist.obsproc
+namelist.input
+parame.in
+```
+
+---
+
+##### Obsproc
+You could also navigate to the obsproc folder itself and copy 19:00:00_fake.txt but this method is cleaner. For more information on what obsproc does, refer to the ucar guide but it basically takes in Little_r files, processes them and returns an ascii file.
+```bash
+cd testCaseWRFDA
+export WRFDA_DIR="/path_to_directory"
+ln -sf $WRFDA_DIR/var/obsproc/obsproc.exe .
+ln -sf $WRFDA_DIR/var/obsproc/obserr.txt .
+ln -sf $WRFDA_DIR/var/obsproc/msfc.tbl .
+./obsproc.exe >& obsproc.out
+```
+Look through the obsproc.out and verify execution was successful. This test case should have 48 multi-level reports (PROFL Reports)
+```bash
+tail obsproc.out
+```
+```
+OTHER reports:      0
+ Total reports:     48 =       0 single +      48 multi-level reports.
+
+------------------------------------------------------------------------------
+Write 3DVAR GTS observations in file obs_gts_2022-10-24_19:00:00.3DVAR (WRFDA V4.4)
+
+Wrote    16080 lines of data in file: obs_gts_2022-10-24_19:00:00.3DVAR
+ 
+No SSMI observations available.
+```
+There should also be this file listed below, this is your ascii file.
+```
+obs_gts_2022-10-24_19:00:00.3DVAR
+```
+---
+##### Data Assimilation(3D-VAR)
+```bash
+ln -sf $WRFDA_DIR/var/run/be.dat.cv3 be.dat
+ln -sf $WRFDA_DIR/var/da/da_wrfvar.exe .
+ln -sf $WRFDA_DIR/var/da/da_update_bc.exe .
+ln -sf $WRFDA_DIR/run/*.TBL .
+ln -sf wrfinput_d01 ./fg
+ln -sf obs_gts_2022-10-24_19:00:00.3DVAR ./ob.ascii
+./da_wrfvar.exe
+tail rsl.out.0000
+```
+```*** WRF-Var completed successfully ***```<br>
+I'd also recommend looking into rsl.out.0000 to confirm that the "Total number of obs." is greater than 0.<br>
+Next step is to update the boundary conditions, this will override the wrfbdy file so if you want to verify a change is made, make sure to have a copy. This looks at parame.in and requires wrfvar_output and wrfbdy_01
+```bash
+./da_update_bc.exe
+```
+This should create fort.11 and fort.12 with information about changes made. Once again, if more information is needed, please look at the ucar guide.
+
+Using ncdiff you can check the differences between wrfvar_output and wrfinput_d01 to confirm that assimilation has occurred as expected.
+
+---
+#### Running WRF
+The wrfvar_output would be the wrfinput_d01 provided to your wrf simulation alongside the new wrfbdy_d01 you created. From here you would just run ```./wrf.exe```
+<br>This would not work in this case since you do not have the met_em files
