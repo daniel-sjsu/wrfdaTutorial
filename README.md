@@ -20,11 +20,6 @@ git clone git://repo.or.cz/WRF-SFIRE.git WRF-SFIRE-DA
 ```
 Some more information about WRF-SFIRE located [here](https://wiki.openwfm.org/wiki/How_to_get_WRF-SFIRE).
 
-Download test case files, you can skip this if you want to make your own case or are using a newer version of WRFSFIRE(V4.4)
-```bash
-wget link
-unzup fileName
-```
 
 ---
 
@@ -119,8 +114,10 @@ The tutorial website has a test case but it is for an older version of WRF so nu
 You can skip this if you want to make your own case or are using a newer version of WRFSFIRE(V4.4). <br>
 Change directories to where you'd like to run your testing (For example back into the WRFSFIRE parent directory)
 ```bash
-wget link
-unzup fileName
+wget https://github.com/daniel-sjsu/wrfdaTutorial/archive/refs/tags/v1.0.0.zip
+unzip v1.0.0.zip
+mv wrfdaTutorial-1.0.0 testCaseWRFDA
+ls testCaseWRFDA
 ```
 This should contain the following files
 ```
