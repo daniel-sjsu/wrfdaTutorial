@@ -132,7 +132,7 @@ parame.in
 ---
 
 ##### Obsproc
-You could also navigate to the obsproc folder itself and copy 19:00:00_fake.txt but this method is cleaner. For more information on what obsproc does, refer to the ucar guide but it basically takes in Little_r files, processes them and returns an ascii file.
+You could also navigate to the obsproc folder itself and copy 19:00:00_fake.txt but this method is cleaner. For more information on what obsproc does, refer to the ucar guide but it basically takes in the little_r filepath taken from namelist.obsproc, processes it and returns an ascii file.
 ```bash
 cd testCaseWRFDA
 export WRFDA_DIR="/path_to_directory"
