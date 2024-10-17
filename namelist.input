@@ -13,7 +13,6 @@ ob_format=2,
 /
 &wrfvar6
 max_ext_its=1,
-ntmax=500,
 orthonorm_gradient=true,
 /
 &wrfvar7
@@ -70,8 +69,8 @@ end_hour=19,
 e_we=82,
 e_sn=82,
 e_vert=41,
-dx=16.460905349794235,
-dy=16.460905349794235,
+dx=1000
+dy=1000
 /
 &dfi_control
 /
