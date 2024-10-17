@@ -31,9 +31,10 @@ Compilation requires netCDF to be installed, refer to this [tutorial](https://ww
 ```bash
 export NETCDF="/path_to_directory"
 ```
-However, it is best to load in other libraries used for WRF in general using something like this script to avoid:<br> 
+However, it is best to load in other libraries used for WRF in general. This avoids messages and limitations to the installation like this:<br> 
 `HDF5 not set in environment. Will configure WRF for use without.`<br>
-`$JASPERLIB or $JASPERINC not found in environment, configuring to build without grib2 I/O...`
+`$JASPERLIB or $JASPERINC not found in environment, configuring to build without grib2 I/O...`<br>
+Assuming those modules have been installed to run WRF or WRF-SFIRE previously, a script like this can be used to load in all the modules. 
 
 ```bash
 module purge
@@ -132,7 +133,8 @@ parame.in
 ---
 
 ##### Obsproc
-You could also navigate to the obsproc folder itself and copy 19:00:00_fake.txt but this method is cleaner. For more information on what obsproc does, refer to the ucar guide but it basically takes in the little_r filepath taken from namelist.obsproc, processes it and returns an ascii file.
+You could also navigate to the obsproc folder itself and copy 19:00:00_fake.txt but this method is cleaner. For more information on what obsproc does, refer to the ucar guide but it basically takes in the little_r filepath taken from namelist.obsproc, processes it and returns an ascii file.<br>
+Change the path to WRFDA_DIR to lead to your WRF-SFIRE-DA installation. 
 ```bash
 cd testCaseWRFDA
 export WRFDA_DIR="/path_to_directory"
