@@ -26,7 +26,7 @@ Some more information about WRF-SFIRE located [here](https://wiki.openwfm.org/wi
 #### Compiling 3D-VAR 
 More information found in the [UCAR Guide](https://www2.mmm.ucar.edu/wrf/users/wrfda/Docs/user_guide_V3.7.1/users_guide_chap6.htm). When copying commands from that link, be careful since they sometimes use a different "-" which causes problems.
 
-Compilation requires netCDF to be installed, refer to this [tutorial](https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php#STEP2) for instructions on installing.
+Compilation requires netCDF to be installed, refer to this [tutorial](https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compilation_tutorial.php#STEP2) for instructions on installing. Replace path_to_directory with your actual installation path.
 
 ```bash
 export NETCDF="/path_to_directory"
@@ -34,7 +34,7 @@ export NETCDF="/path_to_directory"
 However, it is best to load in other libraries used for WRF in general. This avoids messages and limitations to the installation like this:<br> 
 `HDF5 not set in environment. Will configure WRF for use without.`<br>
 `$JASPERLIB or $JASPERINC not found in environment, configuring to build without grib2 I/O...`<br>
-Assuming those modules have been installed to run WRF or WRF-SFIRE previously, a script like this can be used to load in all the modules. 
+Assuming those modules have been installed to run WRF or WRF-SFIRE previously, a script like this could be used to load in all modules and paths.
 
 ```bash
 module purge
@@ -164,6 +164,7 @@ obs_gts_2022-10-24_19:00:00.3DVAR
 ```
 ---
 ##### Data Assimilation(3D-VAR)
+To run data assimilation you need a first guess file(wrfinput), your observation file(ascii) created in previous step, and background error statistics(CV3). These need to be called a certain way to be recognized as shown below. The execubtables and some tables are linked as well.
 ```bash
 ln -sf $WRFDA_DIR/var/run/be.dat.cv3 be.dat
 ln -sf $WRFDA_DIR/var/da/da_wrfvar.exe .
@@ -187,4 +188,5 @@ Using ncdiff you can check the differences between wrfvar_output and wrfinput_d0
 ---
 #### Running WRF
 The wrfvar_output would be the wrfinput_d01 provided to your wrf simulation alongside the new wrfbdy_d01 you created. From here you would just run ```./wrf.exe```
-<br>This would not work in this case since you do not have the met_em files
+<br>This would not work in this case since you do not have the met_em files.<br>
+More information about individual steps will be added with future updates.
